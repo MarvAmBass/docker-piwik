@@ -13,13 +13,23 @@ View in GitHub [MarvAmBass/docker-piwik](https://github.com/MarvAmBass/docker-pi
 
 ## Environment variables and defaults
 
-### For Headless installation required:
+### For Headless installation required
+
+Piwik Database Settings
 
 * __PIWIK\_MYSQL\_USER__
  * no default - if null it will start piwik in initial mode
 * __PIWIK\_MYSQL\_PASSWORD__
  * no default - if null it will start piwik in initial mode
-
+* __PIWIK\_MYSQL\_HOST__
+ * default: _mysql_
+* __PIWIK\_MYSQL\_PORT__
+ * default: _3306_ - if you use a different mysql port change it
+* __PIWIK\_MYSQL\_DBNAME__
+ * default: _piwik_
+* __PIWIK\_MYSQL\_PREFIX__
+ * default: _piwik\__
+ 
 Piwik Admin Settings
 
 * __PIWIK\_ADMIN__
@@ -53,18 +63,14 @@ Piwik Track Settings
  
 ### Misc Settings
 
-* __DH\_SIZE__
- * default: 512 fast but a bit insecure. if you need more security just use a higher value
-* __PIWIK\_MYSQL\_HOST__
- * default: _mysql_
-* __PIWIK\_MYSQL\_PORT__
- * default: _3306_ - if you use a different mysql port change it
-* __PIWIK\_MYSQL\_DBNAME__
- * default: _piwik_
-* __PIWIK\_MYSQL\_PREFIX__
- * default: _piwik\__
 * __PIWIK\_RELATIVE\_URL\_ROOT__
  * default: _/piwik_ - you can chance that to whatever you want/need
+
+### Inherited Variables
+
+* __DH\_SIZE__
+ * default: 512 fast but a bit insecure. if you need more security just use a higher value
+ * inherited from [MarvAmBass/docker-nginx-ssl-secure](https://github.com/MarvAmBass/docker-nginx-ssl-secure)
 
 ## Using the marvambass/piwik Container
 
