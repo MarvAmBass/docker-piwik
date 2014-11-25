@@ -47,7 +47,7 @@ Piwik Track Settings
  * __1 or __0__ - this will skip browsers with do not track enabled from tracking - default: _1_
  
 * __DH\_SIZE__
- * default: 512 fast but a bit unsecure. if you need more security just use a higher value
+ * default: 512 fast but a bit insecure. if you need more security just use a higher value
 * __PIWIK\_MYSQL\_HOST__
  * default: _mysql_
 * __PIWIK\_MYSQL\_PORT__
@@ -59,7 +59,7 @@ Piwik Track Settings
 * __PIWIK\_RELATIVE\_URL\_ROOT__
  * default: _/piwik_ - you can chance that to whatever you want/need
 
-## Using the marvambass/phpmyadmin Container
+## Using the marvambass/piwik Container
 
 First you need a running MySQL Container (you could use: [marvambass/mysql](https://registry.hub.docker.com/u/marvambass/mysql/)).
 
