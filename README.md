@@ -14,7 +14,7 @@ View in GitHub [MarvAmBass/docker-piwik](https://github.com/MarvAmBass/docker-pi
 ## Environment variables and defaults
 
 * __DH\_SIZE__
- * default: 512 fast but a bit unsecure. if you need more security just use a higher value
+ * default: 512 fast but a bit insecure. if you need more security just use a higher value
 * __PIWIK\_MYSQL\_HOST__
  * default: _mysql_
 * __PIWIK\_MYSQL\_PORT__
@@ -30,7 +30,7 @@ View in GitHub [MarvAmBass/docker-piwik](https://github.com/MarvAmBass/docker-pi
 * __PIWIK\_RELATIVE\_URL\_ROOT__
  * default: _/_ - you can chance that to /stats or what you need
 
-## Using the marvambass/phpmyadmin Container
+## Using the marvambass/piwik Container
 
 First you need a running MySQL Container (you could use: [marvambass/mysql](https://registry.hub.docker.com/u/marvambass/mysql/)).
 
