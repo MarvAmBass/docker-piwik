@@ -30,4 +30,4 @@ ADD startup-piwik.sh /opt/startup-piwik.sh
 RUN chmod a+x /opt/startup-piwik.sh
 
 # add '/opt/startup-piwik.sh' to entrypoint.sh
-RUN sed -i 's/#!\/bin\/bash/#!\/bin\/bash\n\/opt\/startup-piwik.sh/g' /opt/entrypoint.sh
+RUN sed -i 's/# exec CMD/# exec CMD\n\/opt\/startup-piwik.sh/g' /opt/entrypoint.sh
