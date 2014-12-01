@@ -64,7 +64,7 @@ Piwik Track Settings
 ### Misc Settings
 
 * __PIWIK\_RELATIVE\_URL\_ROOT__
- * default: _/piwik_ - you can chance that to whatever you want/need
+ * default: _/piwik/_ - you can chance that to whatever you want/need
 
 ### Inherited Variables
 
