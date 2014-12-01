@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 # clean http directory
 RUN rm -rf /usr/share/nginx/html/*
 
-# install nginx phpmyadmin config
+# install nginx piwik config
 ADD nginx-piwik.conf /etc/nginx/conf.d/nginx-piwik.conf
 
 RUN wget "http://builds.piwik.org/piwik-latest.zip" -O piwik.zip
