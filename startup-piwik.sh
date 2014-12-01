@@ -45,8 +45,13 @@ then
 fi
 
 echo ">> making piwik available beneath: $PIWIK_RELATIVE_URL_ROOT"
+mkdir -p "/usr/share/nginx/$PIWIK_RELATIVE_URL_ROOT" 
+# adding softlink for nginx connection
+echo ">> adding softlink from /roundcube to $PIWIK_RELATIVE_URL_ROOT"
 mkdir -p "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
-cp -a /piwik/* "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
+rm -rf "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
+ln -s /piwik $(echo "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT" | sed 's/\/$//')
+
 
 chown -R www-data:www-data "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
 chmod -R 0755 /usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT\tmp
