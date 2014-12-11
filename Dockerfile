@@ -2,6 +2,7 @@ FROM marvambass/nginx-ssl-php
 MAINTAINER MarvAmBass
 
 ENV DH_SIZE 512
+ENV PIWIK_VERSION 2.9.1
 
 RUN apt-get update && apt-get install -y \
     mysql-client \
@@ -17,7 +18,7 @@ RUN rm -rf /usr/share/nginx/html/*
 # install nginx piwik config
 ADD nginx-piwik.conf /etc/nginx/conf.d/nginx-piwik.conf
 
-RUN wget -qO- "http://builds.piwik.org/piwik-latest.tar.gz" | tar xz 
+RUN wget -qO- "http://builds.piwik.org/piwik-$PIWIK_VERSION.tar.gz" | tar xz 
 
 # add piwik config
 ADD config.ini.php /piwik/config/config.ini.php
