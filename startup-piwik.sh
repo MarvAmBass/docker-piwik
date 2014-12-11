@@ -71,6 +71,7 @@ echo
 
 echo ">> wait 5 seconds to start everything up"
 echo
+
 sleep 5
 
 if [ ! -z ${PIWIK_MYSQL_PASSWORD+x} ] && [ ! -z ${PIWIK_MYSQL_USER+x} ]
@@ -81,6 +82,7 @@ then
 fi
 
 nginx &
+
 sleep 4
 
 if [ `echo "SHOW TABLES FROM $PIWIK_MYSQL_DBNAME;" | mysql -h $PIWIK_MYSQL_HOST -P $PIWIK_MYSQL_PORT -u $PIWIK_MYSQL_USER -p$PIWIK_MYSQL_PASSWORD | grep "$PIWIK_MYSQL_PREFIX" | wc -l` -lt 1 ]
