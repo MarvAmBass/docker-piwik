@@ -69,6 +69,10 @@ echo ">> init piwik"
 echo ">> #####################"
 echo
 
+echo ">> wait 5 seconds to start everything up"
+echo
+sleep 5
+
 if [ ! -z ${PIWIK_MYSQL_PASSWORD+x} ] && [ ! -z ${PIWIK_MYSQL_USER+x} ]
 then
   echo ">> try to create Database"
