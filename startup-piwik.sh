@@ -166,7 +166,7 @@ wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?updateCorePlugins=1
 
 killall nginx
 
-cat EOF<<
+cat <<EOF
 Add the following JS-Code to your Site -> don't forget to change the URLs ;)
 
 <!-- Piwik -->
