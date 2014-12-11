@@ -35,7 +35,7 @@ Piwik Admin Settings
 * __PIWIK\_ADMIN__
  * default: admin - the name of the admin user
 * __PIWIK\_ADMIN\_PASSWORD__
- * default: <randomly generated 10 characters> - the password for the admin user
+ * default: [randomly generated 10 characters] - the password for the admin user
 * __PIWIK\_ADMIN\_MAIL__
  * default: no@no.tld - only needed if you are interested in one of those newsletters
 * __PIWIK\_SUBSCRIBE\_NEWSLETTER__
