@@ -69,18 +69,6 @@ echo ">> init piwik"
 echo ">> #####################"
 echo
 
-echo ">> wait 5 seconds to start everything up"
-echo
-
-sleep 5
-
-if [ ! -z ${PIWIK_MYSQL_PASSWORD+x} ] && [ ! -z ${PIWIK_MYSQL_USER+x} ]
-then
-  echo ">> try to create Database"
-  echo "CREATE DATABASE IF NOT EXISTS $PIWIK_MYSQL_DBNAME;" | mysql -h $PIWIK_MYSQL_HOST -P $PIWIK_MYSQL_PORT -u $PIWIK_MYSQL_USER -p$PIWIK_MYSQL_PASSWORD
-  echo ">> exit code of mysql: $?"
-fi
-
 nginx &
 
 sleep 4
