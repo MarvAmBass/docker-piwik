@@ -47,7 +47,7 @@ fi
 echo ">> making piwik available beneath: $PIWIK_RELATIVE_URL_ROOT"
 mkdir -p "/usr/share/nginx/$PIWIK_RELATIVE_URL_ROOT" 
 # adding softlink for nginx connection
-echo ">> adding softlink from /roundcube to $PIWIK_RELATIVE_URL_ROOT"
+echo ">> adding softlink from /piwik to $PIWIK_RELATIVE_URL_ROOT"
 mkdir -p "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
 rm -rf "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
 ln -s /piwik $(echo "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT" | sed 's/\/$//')
@@ -57,6 +57,7 @@ chown -R www-data:www-data "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
 chmod -R 0755 /usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT\tmp
 
 if [ -z ${PIWIK_MYSQL_PASSWORD+x} ] || [ -z ${PIWIK_MYSQL_USER+x} ]
+then
   echo ">> piwik started, initial setup needs to be done in browser!"
   echo ">> be fast! - anyone with access to your server can configure it!"
   exit 0
@@ -67,6 +68,13 @@ echo ">> #####################"
 echo ">> init piwik"
 echo ">> #####################"
 echo
+
+if [ ! -z ${PIWIK_MYSQL_PASSWORD+x} ] && [ ! -z ${PIWIK_MYSQL_USER+x} ]
+then
+  echo ">> try to create Database"
+  echo "CREATE DATABASE IF NOT EXISTS $PIWIK_MYSQL_DBNAME;" | mysql -h $PIWIK_MYSQL_HOST -P $PIWIK_MYSQL_PORT -u $PIWIK_MYSQL_USER -p$PIWIK_MYSQL_PASSWORD
+  echo ">> exit code of mysql: $?"
+fi
 
 nginx &
 sleep 4
