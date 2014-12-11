@@ -78,11 +78,6 @@ then
   echo ">> no DB installed, MYSQL User or Password specified - seems like the first start"
   rm /usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT\config/config.ini.php
 
-  echo ">> init DB"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=databaseSetup \
-  --post-data="host=$PIWIK_MYSQL_HOST:$PIWIK_MYSQL_PORT&username=$PIWIK_MYSQL_USER&password=$PIWIK_MYSQL_PASSWORD&dbname=$PIWIK_MYSQL_DBNAME&tables_prefix=$PIWIK_MYSQL_PREFIX&adapter=PDO%5CMYSQL&submit=n%C3%A4chste+%C2%BB" \
-  &> /dev/null
-
   echo ">> init Piwik"
   if [ -z ${PIWIK_ADMIN+x} ]
   then
@@ -112,11 +107,7 @@ then
     PIWIK_SUBSCRIBE_NEWSLETTER=0
     PIWIK_SUBSCRIBE_PRO_NEWSLETTER=0
   fi
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=setupSuperUser&module=Installation \
-  --post-data="login=$PIWIK_ADMIN&password=$PIWIK_ADMIN_PASSWORD&password_bis=$PIWIK_ADMIN_PASSWORD&email=$PIWIK_ADMIN_MAIL&subscribe_newsletter_piwikorg=$PIWIK_SUBSCRIBE_NEWSLETTER&subscribe_newsletter_piwikpro=$PIWIK_SUBSCRIBE_PRO_NEWSLETTER&submit=n%C3%A4chste+%C2%BB" \
-  &> /dev/null
 
-  echo ">> add first website"
   if [ -z ${SITE_NAME+x} ]
   then
     SITE_NAME="My local Website"
@@ -136,11 +127,7 @@ then
   then
     SITE_ECOMMERCE=0
   fi
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=firstWebsiteSetup&module=Installation \
-  --post-data="siteName=$SITE_NAME&url=$SITE_URL&timezone=$SITE_TIMEZONE&ecommerce=$SITE_ECOMMERCE&submit=n%C3%A4chste+%C2%BB" \
-  &> /dev/null
 
-  echo ">> set client ip settings"
   if [ -z ${ANONYMISE_IP+x} ]
   then
     ANONYMISE_IP=1
@@ -150,14 +137,74 @@ then
   then
     DO_NOT_TRACK=1
   fi
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=finished&module=Installation \
-  --post-data="do_not_track=$DO_NOT_TRACK&anonymise_ip=$ANONYMISE_IP&submit=Weiter+zu+Piwik+%C2%BB" \
-  &> /dev/null
+
+
+  echo ">> piwik wizard: #1 open installer"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT \
+  2> /dev/null > /dev/null
+
+  sleep 5
+  
+  echo ">> piwik wizard: #2 open system check"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=systemCheck&trackerStatus=0 \
+  2> /dev/null > /dev/null
+
+  sleep 5
+  
+  echo ">> piwik wizard: #3 open database settings"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=databaseSetup&trackerStatus=0&clientProtocol=https \
+  2> /dev/null > /dev/null
+
+  sleep 5
+  
+  echo ">> piwik wizard: #4 store database settings"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=databaseSetup&trackerStatus=0&clientProtocol=https&module=Installation&clientProtocol=https
+  --post-data="host=$PIWIK_MYSQL_HOST:$PIWIK_MYSQL_PORT&username=$PIWIK_MYSQL_USER&password=$PIWIK_MYSQL_PASSWORD&dbname=$PIWIK_MYSQL_DBNAME&tables_prefix=$PIWIK_MYSQL_PREFIX&adapter=PDO%5CMYSQL&submit=Next+%C2%BB" \
+  2> /dev/null > /dev/null
+
+  sleep 5
+  
+  echo ">> piwik wizard: #5 open piwik settings"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=setupSuperUser&trackerStatus=0&clientProtocol=https&module=Installation \
+  2> /dev/null > /dev/null
+
+  sleep 5
+  
+  echo ">> piwik wizard: #6 store piwik settings"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=setupSuperUser&trackerStatus=0&clientProtocol=https&module=Installation \
+  --post-data="login=$PIWIK_ADMIN&password=$PIWIK_ADMIN_PASSWORD&password_bis=$PIWIK_ADMIN_PASSWORD&email=$PIWIK_ADMIN_MAIL&subscribe_newsletter_piwikorg=$PIWIK_SUBSCRIBE_NEWSLETTER&subscribe_newsletter_piwikpro=$PIWIK_SUBSCRIBE_PRO_NEWSLETTER&submit=Next+%C2%BB" \
+  2> /dev/null > /dev/null
+
+  sleep 5
+  
+  echo ">> piwik wizard: #7 store piwik site settings"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=firstWebsiteSetup&trackerStatus=0&clientProtocol=https&module=Installation \
+  --post-data="siteName=$SITE_NAME&url=$SITE_URL&timezone=$SITE_TIMEZONE&ecommerce=$SITE_ECOMMERCE&submit=Next+%C2%BB" \
+  2> /dev/null > /dev/null
+
+  sleep 5
+  
+  echo ">> piwik wizard: #8 skip js page"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=finished&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=justabot \
+  2> /dev/null > /dev/null
+  
+  sleep 5
+
+  echo ">> piwik wizard: #9 final settings"
+  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=finished&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=justabot \
+  --post-data="do_not_track=$DO_NOT_TRACK&anonymise_ip=$ANONYMISE_IP&submit=Continue+to+Piwik+%C2%BB" \
+  2> /dev/null > /dev/null
+
+  sleep 5
+  
 fi
 
 echo ">> update CorePlugins"
-wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?updateCorePlugins=1 &> /dev/null
+wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?updateCorePlugins=1 \
+2> /dev/null > /dev/null
 
+sleep 2
+  
 killall nginx
 
 cat <<EOF
