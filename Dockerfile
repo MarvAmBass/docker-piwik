@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     php5-geoip \
     php-apc \
     wget \
-    unzip
+    bsdtar 
 
 # clean http directory
 RUN rm -rf /usr/share/nginx/html/*
@@ -18,9 +18,7 @@ RUN rm -rf /usr/share/nginx/html/*
 # install nginx piwik config
 ADD nginx-piwik.conf /etc/nginx/conf.d/nginx-piwik.conf
 
-RUN wget "http://builds.piwik.org/piwik-latest.zip" -O piwik.zip
-RUN unzip piwik.zip
-RUN rm piwik.zip
+RUN wget -qO- "http://builds.piwik.org/piwik-latest.zip" | bsdtar -xvf-
 
 # add piwik config
 ADD config.ini.php /piwik/config/config.ini.php
@@ -31,3 +29,6 @@ RUN chmod a+x /opt/startup-piwik.sh
 
 # add '/opt/startup-piwik.sh' to entrypoint.sh
 RUN sed -i 's/# exec CMD/# exec CMD\n\/opt\/startup-piwik.sh/g' /opt/entrypoint.sh
+
+# Clean up APT when done.
+RUN apt-get clean autoclean && apt-get autoremove -y && rm -rf /tmp/* /var/tmp/* && rm -rf /var/lib/{apt,dpkg,cache,log}/
