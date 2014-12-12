@@ -65,11 +65,17 @@ Piwik Track Settings
 
 * __PIWIK\_RELATIVE\_URL\_ROOT__
  * default: _/piwik/_ - you can chance that to whatever you want/need
+* __PIWIK\_NOT\_BEHIND\_PROXY__
+ * default: not set - if set to any value the settings to listen behind a reverse proxy server will be removed
+* __PIWIK\_HSTS\_HEADERS\_ENABLE__
+ * default: not set - if set to any value the HTTP Strict Transport Security will be activated on SSL Channel
+* __PIWIK\_HSTS\_HEADERS\_ENABLE\_NO\_SUBDOMAINS__
+ * default: not set - if set together with __PIWIK\_HSTS\_HEADERS\_ENABLE__ and set to any value the HTTP Strict Transport Security will be deactivated on subdomains
 
 ### Inherited Variables
 
 * __DH\_SIZE__
- * default: 512 fast but a bit insecure. if you need more security just use a higher value
+ * default: 1024 fast but a bit insecure. if you need more security just use a higher value
  * inherited from [MarvAmBass/docker-nginx-ssl-secure](https://github.com/MarvAmBass/docker-nginx-ssl-secure)
 
 ## Using the marvambass/piwik Container

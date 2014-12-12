@@ -1,7 +1,7 @@
 FROM marvambass/nginx-ssl-php
 MAINTAINER MarvAmBass
 
-ENV DH_SIZE 512
+ENV DH_SIZE 1024
 
 RUN apt-get update && apt-get install -y \
     mysql-client \
@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     php5-gd \
     php5-geoip \
     php-apc \
-    wget
+    curl
 
 # clean http directory
 RUN rm -rf /usr/share/nginx/html/*
@@ -18,7 +18,7 @@ RUN rm -rf /usr/share/nginx/html/*
 ADD nginx-piwik.conf /etc/nginx/conf.d/nginx-piwik.conf
 
 # download piwik
-RUN wget -qO- "http://builds.piwik.org/piwik-latest.tar.gz" | tar xz
+RUN curl "http://builds.piwik.org/piwik-latest.tar.gz" | tar xz
 
 # add piwik config
 ADD config.ini.php /piwik/config/config.ini.php

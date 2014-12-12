@@ -1,5 +1,27 @@
 #/bin/bash
 
+if [ ! -z ${PIWIK_NOT_BEHIND_PROXY+x} ]
+then
+  echo ">> disable reverse proxy settings - connect to piwik directly"
+  sed -i '1,5d' /piwik/config/config.ini.php
+else
+  echo ">> piwik is configured to listen behind a reverse proxy now"
+fi
+
+if [ ! -z ${PIWIK_HSTS_HEADERS_ENABLE+x} ]
+then
+  echo ">> HSTS Headers enabled"
+  sed -i 's/#add_header Strict-Transport-Security/add_header Strict-Transport-Security/g' /etc/nginx/conf.d/nginx-piwik.conf
+
+  if [ ! -z ${PIWIK_HSTS_HEADERS_ENABLE_NO_SUBDOMAINS+x} ]
+  then
+    echo ">> HSTS Headers configured without includeSubdomains"
+    sed -i 's/; includeSubdomains//g' /etc/nginx/conf.d/nginx-piwik.conf
+  fi
+else
+  echo ">> HSTS Headers disabled"
+fi
+
 if [ -z ${PIWIK_MYSQL_HOST+x} ]
 then
   PIWIK_MYSQL_HOST=mysql
@@ -69,7 +91,7 @@ echo ">> init piwik"
 echo ">> #####################"
 echo
 
-nginx &
+nginx 2> /dev/null > /dev/null &
 
 sleep 4
 
@@ -140,68 +162,118 @@ then
 
 
   echo ">> piwik wizard: #1 open installer"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT \
-  2> /dev/null > /dev/null
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT \
+  -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' --compressed \
+  2> /dev/null | grep " % Done"
 
   sleep 5
   
   echo ">> piwik wizard: #2 open system check"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=systemCheck&trackerStatus=0 \
-  2> /dev/null > /dev/null
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=systemCheck&trackerStatus=0" \
+  -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://localhost/piwik/' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' --compressed \
+  2> /dev/null | grep " % Done"
 
   sleep 5
   
   echo ">> piwik wizard: #3 open database settings"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=databaseSetup&trackerStatus=0&clientProtocol=https \
-  2> /dev/null > /dev/null
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=databaseSetup&trackerStatus=0&clientProtocol=https" \
+  -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://localhost/piwik/index.php?action=systemCheck&trackerStatus=0' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' --compressed \
+  2> /dev/null | grep " % Done"
 
   sleep 5
   
   echo ">> piwik wizard: #4 store database settings"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=databaseSetup&trackerStatus=0&clientProtocol=https&module=Installation&clientProtocol=https
-  --post-data="host=$PIWIK_MYSQL_HOST:$PIWIK_MYSQL_PORT&username=$PIWIK_MYSQL_USER&password=$PIWIK_MYSQL_PASSWORD&dbname=$PIWIK_MYSQL_DBNAME&tables_prefix=$PIWIK_MYSQL_PREFIX&adapter=PDO%5CMYSQL&submit=Next+%C2%BB" \
-  2> /dev/null > /dev/null
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=databaseSetup&trackerStatus=0&clientProtocol=https" \
+  -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Origin: https://localhost' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Referer: https://localhost/piwik/index.php?action=databaseSetup&trackerStatus=0&clientProtocol=https' -H 'Connection: keep-alive' --compressed \
+  --data-urlencode host="$PIWIK_MYSQL_HOST:$PIWIK_MYSQL_PORT" \
+  --data-urlencode username="$PIWIK_MYSQL_USER" \
+  --data-urlencode password="$PIWIK_MYSQL_PASSWORD" \
+  --data-urlencode dbname="$PIWIK_MYSQL_DBNAME" \
+  --data-urlencode tables_prefix="$PIWIK_MYSQL_PREFIX" \
+  --data 'adapter=PDO%5CMYSQL&submit=Next+%C2%BB' \
+  2> /dev/null | grep " % Done"
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=tablesCreation&trackerStatus=0&clientProtocol=https&module=Installation" \
+  -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://localhost/piwik/index.php?action=databaseSetup&trackerStatus=0&clientProtocol=https' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' --compressed \
+  2> /dev/null | grep " % Done"
 
   sleep 5
   
   echo ">> piwik wizard: #5 open piwik settings"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=setupSuperUser&trackerStatus=0&clientProtocol=https&module=Installation \
-  2> /dev/null > /dev/null
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=setupSuperUser&trackerStatus=0&clientProtocol=https&module=Installation" \
+  -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://localhost/piwik/index.php?action=tablesCreation&trackerStatus=0&clientProtocol=https&module=Installation' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' --compressed \
+  2> /dev/null | grep " % Done"
 
   sleep 5
   
   echo ">> piwik wizard: #6 store piwik settings"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=setupSuperUser&trackerStatus=0&clientProtocol=https&module=Installation \
-  --post-data="login=$PIWIK_ADMIN&password=$PIWIK_ADMIN_PASSWORD&password_bis=$PIWIK_ADMIN_PASSWORD&email=$PIWIK_ADMIN_MAIL&subscribe_newsletter_piwikorg=$PIWIK_SUBSCRIBE_NEWSLETTER&subscribe_newsletter_piwikpro=$PIWIK_SUBSCRIBE_PRO_NEWSLETTER&submit=Next+%C2%BB" \
-  2> /dev/null > /dev/null
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=setupSuperUser&trackerStatus=0&clientProtocol=https&module=Installation" \
+  -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Origin: https://localhost' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Referer: https://localhost/piwik/index.php?action=setupSuperUser&trackerStatus=0&clientProtocol=https&module=Installation' -H 'Connection: keep-alive' --compressed \
+  --data-urlencode login="$PIWIK_ADMIN" \
+  --data-urlencode password="$PIWIK_ADMIN_PASSWORD" \
+  --data-urlencode password_bis="$PIWIK_ADMIN_PASSWORD" \
+  --data-urlencode email="$PIWIK_ADMIN_MAIL" \
+  --data-urlencode subscribe_newsletter_piwikorg="$PIWIK_SUBSCRIBE_NEWSLETTER" \
+  --data-urlencode subscribe_newsletter_piwikpro="$PIWIK_SUBSCRIBE_PRO_NEWSLETTER" \
+  --data 'submit=Next+%C2%BB' \
+  2> /dev/null | grep " % Done"
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=firstWebsiteSetup&trackerStatus=0&clientProtocol=https&module=Installation" \
+  -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://localhost/piwik/index.php?action=setupSuperUser&trackerStatus=0&clientProtocol=https&module=Installation' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' --compressed \
+  2> /dev/null | grep " % Done"
 
   sleep 5
   
   echo ">> piwik wizard: #7 store piwik site settings"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=firstWebsiteSetup&trackerStatus=0&clientProtocol=https&module=Installation \
-  --post-data="siteName=$SITE_NAME&url=$SITE_URL&timezone=$SITE_TIMEZONE&ecommerce=$SITE_ECOMMERCE&submit=Next+%C2%BB" \
-  2> /dev/null > /dev/null
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=firstWebsiteSetup&trackerStatus=0&clientProtocol=https&module=Installation" \
+  -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Origin: https://localhost' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Referer: https://localhost/piwik/index.php?action=firstWebsiteSetup&trackerStatus=0&clientProtocol=https&module=Installation' -H 'Connection: keep-alive' --compressed \
+  --data-urlencode siteName="$SITE_NAME" \
+  --data-urlencode url="$SITE_URL" \
+  --data-urlencode timezone="$SITE_TIMEZONE" \
+  --data-urlencode ecommerce="$SITE_ECOMMERCE" \
+  --data 'submit=Next+%C2%BB' \
+  2> /dev/null | grep " % Done"
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=trackingCode&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=default" \
+  -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://localhost/piwik/index.php?action=firstWebsiteSetup&trackerStatus=0&clientProtocol=https&module=Installation' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' --compressed \
+  2> /dev/null | grep " % Done"
 
   sleep 5
   
   echo ">> piwik wizard: #8 skip js page"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=finished&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=justabot \
-  2> /dev/null > /dev/null
-  
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=finished&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=default" -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://localhost/piwik/index.php?action=trackingCode&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=justabot' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' --compressed \
+  2> /dev/null | grep " % Done"
+
   sleep 5
 
   echo ">> piwik wizard: #9 final settings"
-  wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?action=finished&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=justabot \
-  --post-data="do_not_track=$DO_NOT_TRACK&anonymise_ip=$ANONYMISE_IP&submit=Continue+to+Piwik+%C2%BB" \
-  2> /dev/null > /dev/null
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php?action=finished&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=default" \
+  -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Origin: https://localhost' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Referer: https://localhost/piwik/index.php?action=finished&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=justabot' -H 'Connection: keep-alive' --compressed \
+  --data-urlencode do_not_track="$DO_NOT_TRACK" \
+  --data-urlencode anonymise_ip="$ANONYMISE_IP" \
+  --data 'submit=Continue+to+Piwik+%C2%BB' \
+  2> /dev/null | grep " % Done"
+
+  curl --insecure https://localhost$PIWIK_RELATIVE_URL_ROOT"index.php" \
+  -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,de;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://localhost/piwik/index.php?action=finished&trackerStatus=0&clientProtocol=https&module=Installation&site_idSite=1&site_name=justabot' -H 'Cookie: pma_lang=en; pma_collation_connection=utf8_general_ci; pma_mcrypt_iv=n%2Bxpbn2a%2Btg%3D; pmaUser-1=L60fYDVIaz0%3D' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' --compressed \
+  2> /dev/null | grep " % Done"
 
   sleep 5
   
 fi
 
 echo ">> update CorePlugins"
-wget -O - http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?updateCorePlugins=1 \
-2> /dev/null > /dev/null
+curl http://localhost$PIWIK_RELATIVE_URL_ROOT\index.php?updateCorePlugins=1 \
+2> /dev/null | grep " % Done"
 
 sleep 2
   
