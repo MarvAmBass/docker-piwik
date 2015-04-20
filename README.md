@@ -28,7 +28,7 @@ Piwik Database Settings
 * __PIWIK\_MYSQL\_PORT__
  * default: _3306_ - if you use a different mysql port change it
 * __PIWIK\_MYSQL\_DBNAME__
- * default: _piwik_
+ * default: _piwik_ - don't use the symbol __-__ in there!
 * __PIWIK\_MYSQL\_PREFIX__
  * default: _piwik\__
  
