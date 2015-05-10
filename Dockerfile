@@ -9,7 +9,8 @@ RUN apt-get update; apt-get install -y \
     php5-gd \
     php5-geoip \
     php-apc \
-    curl
+    curl \
+    zip
 
 # clean http directory
 RUN rm -rf /usr/share/nginx/html/*
@@ -18,7 +19,10 @@ RUN rm -rf /usr/share/nginx/html/*
 ADD nginx-piwik.conf /etc/nginx/conf.d/nginx-piwik.conf
 
 # download piwik
-RUN curl "http://builds.piwik.org/piwik-latest.tar.gz" | tar xz
+RUN curl -O "http://builds.piwik.org/piwik.zip"
+
+# unarchive piwik
+RUN unzip piwik.zip
 
 # add piwik config
 ADD config.ini.php /piwik/config/config.ini.php
