@@ -33,3 +33,6 @@ RUN chmod a+x /opt/startup-piwik.sh
 
 # add '/opt/startup-piwik.sh' to entrypoint.sh
 RUN sed -i 's/# exec CMD/# exec CMD\n\/opt\/startup-piwik.sh/g' /opt/entrypoint.sh
+
+# add missing always_populate_raw_post_data = -1 to php.ini (bug #8, piwik bug #6468)
+RUN sed -i 's/;always_populate_raw_post_data/always_populate_raw_post_data/g' /etc/php5/fpm/php.ini
