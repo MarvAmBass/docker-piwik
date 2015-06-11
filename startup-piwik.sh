@@ -3,7 +3,7 @@
 if [ ! -z ${PIWIK_NOT_BEHIND_PROXY+x} ]
 then
   echo ">> disable reverse proxy settings - connect to piwik directly"
-  sed -i '1,5d' /piwik/config/config.ini.php
+  sed -i '4,5d' /piwik/config/config.ini.php
 else
   echo ">> piwik is configured to listen behind a reverse proxy now"
 fi
