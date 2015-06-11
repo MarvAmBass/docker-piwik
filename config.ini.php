@@ -1,8 +1,9 @@
 [General]
+enable_trusted_host_check = 0
 assume_secure_protocol = 1
 proxy_client_headers[] = HTTP_X_FORWARDED_FOR
 proxy_host_headers[] = HTTP_X_FORWARDED_HOST
-enable_trusted_host_check=0
+
 
 [database]
 host = PIWIK_MYSQL_HOST
