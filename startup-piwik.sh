@@ -67,13 +67,18 @@ then
 fi
 
 echo ">> making piwik available beneath: $PIWIK_RELATIVE_URL_ROOT"
-mkdir -p "/usr/share/nginx/$PIWIK_RELATIVE_URL_ROOT" 
 # adding softlink for nginx connection
 echo ">> adding softlink from /piwik to $PIWIK_RELATIVE_URL_ROOT"
 mkdir -p "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
-rm -rf "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
-ln -s /piwik $(echo "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT" | sed 's/\/$//')
 
+if [ ! -h "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT" ]
+then
+  echo ">> creating softlink"
+  rm -rf "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
+  ln -s /piwik $(echo "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT" | sed 's/\/$//')
+else
+  echo ">> doesn't create softlink - it already exists"
+fi
 
 chown -R www-data:www-data "/usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT"
 chmod -R 0755 /usr/share/nginx/html$PIWIK_RELATIVE_URL_ROOT\tmp
