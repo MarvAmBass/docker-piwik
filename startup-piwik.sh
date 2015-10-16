@@ -306,3 +306,12 @@ Add the following JS-Code to your Site -> don't forget to change the URLs ;)
 <noscript><p><img src="//!!!YOUR-URL!!!/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
 <!-- End Piwik Code -->
 EOF
+
+if [ ! -z ${PIWIK_PLUGINS_ACTIVATE+x} ]
+then
+  for plugin in ${PIWIK_PLUGINS_ACTIVATE}
+  do
+    /piwik/console plugin:activate $plugin
+  done
+fi
+

@@ -31,7 +31,7 @@ Piwik Database Settings
  * default: _piwik_ - don't use the symbol __-__ in there!
 * __PIWIK\_MYSQL\_PREFIX__
  * default: _piwik\__
- 
+
 Piwik Admin Settings
 
 * __PIWIK\_ADMIN__
@@ -62,7 +62,7 @@ Piwik Track Settings
  * __1__ or __0__ - this will anonymise IPs - default: _1_
 * __DO\_NOT\_TRACK__
  * __1__ or __0__ - this will skip browsers with do not track enabled from tracking - default: _1_
- 
+
 ### Misc Settings
 
 * __PIWIK\_RELATIVE\_URL\_ROOT__
@@ -73,6 +73,8 @@ Piwik Track Settings
  * default: not set - if set to any value the HTTP Strict Transport Security will be activated on SSL Channel
 * __PIWIK\_HSTS\_HEADERS\_ENABLE\_NO\_SUBDOMAINS__
  * default: not set - if set together with __PIWIK\_HSTS\_HEADERS\_ENABLE__ and set to any value the HTTP Strict Transport Security will be deactivated on subdomains
+* __PIWIK\_PLUGINS\_ACTIVATE__
+ * default: not set - if set Piwik will activate the Plugins named in the Variable, separated by whitespace
 
 ### Inherited Variables
 
