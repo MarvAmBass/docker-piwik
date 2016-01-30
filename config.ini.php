@@ -8,7 +8,7 @@ proxy_host_headers[] = HTTP_X_FORWARDED_HOST
 [database]
 host = PIWIK_MYSQL_HOST
 username = PIWIK_MYSQL_USER
-password = PIWIK_MYSQL_PASSWORD
+password = "PIWIK_MYSQL_PASSWORD"
 dbname = PIWIK_MYSQL_DBNAME
 tables_prefix = PIWIK_MYSQL_PREFIX
 port = PIWIK_MYSQL_PORT
