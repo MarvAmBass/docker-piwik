@@ -5,7 +5,7 @@ _maintained by MarvAmBass_
 
 ## What is it
 
-This Dockerfile (available as ___marvambass/piwik___) gives you a completly secure piwik.
+This Dockerfile (available as ___marvambass/piwik___) gives you a completly secured piwik.
 
 It's based on the [marvambass/nginx-ssl-php](https://registry.hub.docker.com/u/marvambass/nginx-ssl-php/) Image
 
