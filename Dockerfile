@@ -1,10 +1,12 @@
 FROM marvambass/nginx-ssl-php
 MAINTAINER MarvAmBass
 
-ENV DH_SIZE="2048"  \
-    PIWIK_VERSION="2.16.0"
+ENV DH_SIZE="2048"
+ENV PIWIK_VERSION="2.16.1"
 
-RUN apt-get update; apt-get install -y \
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get -q -y update && \
+    apt-get -q -y install \
     mysql-client \
     php5-mysql \
     php5-gd \
