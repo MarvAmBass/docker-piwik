@@ -2,7 +2,7 @@ FROM marvambass/nginx-ssl-php
 MAINTAINER MarvAmBass
 
 ENV DH_SIZE="2048"  \
-    PIWIK_VERSION="2.16.1"
+    PIWIK_VERSION="2.16.0"
 
 RUN apt-get update; apt-get install -y \
     mysql-client \
