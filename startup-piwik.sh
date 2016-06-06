@@ -6,6 +6,12 @@ then
   sed -i '4,5d' /piwik/config/config.ini.php
 else
   echo ">> piwik is configured to listen behind a reverse proxy now"
+
+  if [ ! -z ${PIWIK_PROXY_HEADER+x} ]
+  then
+    echo ">> using $PIWIK_PROXY_HEADER header to determine client address"
+    sed -i "s/HTTP_X_FORWARDED_FOR/$PIWIK_PROXY_HEADER/g" /piwik/config/config.ini.php
+  fi
 fi
 
 if [ ! -z ${PIWIK_HSTS_HEADERS_ENABLE+x} ]
