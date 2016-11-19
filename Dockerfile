@@ -2,6 +2,7 @@ FROM marvambass/nginx-ssl-php
 MAINTAINER MarvAmBass
 
 ENV DH_SIZE="2048"
+# will be used as branch and tag in docker
 ENV PIWIK_VERSION="2.16.5"
 
 ENV DEBIAN_FRONTEND noninteractive
