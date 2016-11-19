@@ -69,6 +69,9 @@ Piwik Track Settings
  * default: _/piwik/_ - you can chance that to whatever you want/need
 * __PIWIK\_NOT\_BEHIND\_PROXY__
  * default: not set - if set to any value the settings to listen behind a reverse proxy server will be removed
+* __PIWIK_PROXY_HEADER__
+ * default: HTTP_X_FORWARDED_FOR - if set Piwik will attempt to use the given header to determine the original client address.
+   `HTTP_CF_CONNECTING_IP` or `HTTP_CLIENT_IP` may be helpful if behind certain proxies.
 * __PIWIK\_HSTS\_HEADERS\_ENABLE__
  * default: not set - if set to any value the HTTP Strict Transport Security will be activated on SSL Channel
 * __PIWIK\_HSTS\_HEADERS\_ENABLE\_NO\_SUBDOMAINS__
