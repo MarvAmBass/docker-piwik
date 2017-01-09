@@ -13,10 +13,10 @@ RUN apt-get -q -y update && \
     php5-geoip \
     php-apc \
     curl \
-    zip
-
-# clean http directory
-RUN rm -rf /usr/share/nginx/html/*
+    zip; \
+    \
+    echo clean http directory; \
+    rm -rf /usr/share/nginx/html/*
 
 # install nginx piwik config
 ADD nginx-piwik.conf /etc/nginx/conf.d/nginx-piwik.conf
