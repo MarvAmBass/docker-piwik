@@ -2,7 +2,7 @@ FROM marvambass/nginx-ssl-php
 MAINTAINER MarvAmBass
 
 ENV DH_SIZE="2048"
-ENV PIWIK_VERSION="3.0.4"
+ENV PIWIK_VERSION="3.2.0"
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -q -y update && \
