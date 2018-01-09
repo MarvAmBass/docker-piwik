@@ -2,7 +2,7 @@ FROM marvambass/nginx-ssl-php
 MAINTAINER MarvAmBass
 
 ENV DH_SIZE="2048"
-ENV PIWIK_VERSION="3.2.0"
+ENV PIWIK_VERSION="3.2.1"
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -q -y update && \
@@ -22,7 +22,7 @@ RUN apt-get -q -y update && \
 ADD nginx-piwik.conf /etc/nginx/conf.d/nginx-piwik.conf
 
 # download piwik
-RUN curl -O "http://builds.piwik.org/piwik-${PIWIK_VERSION}.zip"
+RUN curl -O "https://builds.matomo.org/piwik-${PIWIK_VERSION}.zip"
 
 # unarchive piwik
 RUN unzip piwik-${PIWIK_VERSION}.zip
