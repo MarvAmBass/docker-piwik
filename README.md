@@ -93,4 +93,6 @@ First you need a running MySQL Container (you could use: [marvambass/mysql](http
 
 You need to _--link_ your mysql container to marvambass/piwik with the name __mysql__
 
-    docker run -d -p 80:80 -p 443:443 --link mysql:mysql --name piwik marvambass/piwik
+```
+docker run -d -p 80:80 -p 443:443 --link mysql:mysql --name piwik marvambass/piwik
+```
