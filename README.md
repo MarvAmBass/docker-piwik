@@ -78,6 +78,8 @@ Piwik Track Settings
  * default: not set - if set together with __PIWIK\_HSTS\_HEADERS\_ENABLE__ and set to any value the HTTP Strict Transport Security will be deactivated on subdomains
 * __PIWIK\_PLUGINS\_ACTIVATE__
  * default: not set - if set Piwik will activate the Plugins named in the Variable, separated by whitespace
+* __PIWIK\_ENABLE\_TRUSTED\_HOST\_CHECK__
+ * default: 0 - Trusted host security check (0=disabled, 1=enabled)
 
 ### Inherited Variables
 

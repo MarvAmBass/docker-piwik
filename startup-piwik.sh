@@ -143,6 +143,11 @@ then
     PIWIK_SUBSCRIBE_NEWSLETTER=0
     PIWIK_SUBSCRIBE_PRO_NEWSLETTER=0
   fi
+  
+  if [ -z ${PIWIK_ENABLE_TRUSTED_HOST_CHECK+x} ]
+  then
+	PIWIK_ENABLE_TRUSTED_HOST_CHECK=0
+  fi
 
   if [ -z ${SITE_NAME+x} ]
   then
@@ -282,6 +287,8 @@ then
   2> /dev/null | grep " % Done"
 
   sleep 5
+  
+  eval "/piwik/console config:set 'General.enable_trusted_host_check=$PIWIK_ENABLE_TRUSTED_HOST_CHECK'"
   
 fi
 
